@@ -1,0 +1,110 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Nền */
+.login-background {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('/public/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
+}
+
+/* Form Login */
+.login-container {
+  width: 350px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Input group */
+.input-group {
+  position: relative;
+  margin: 1.2rem 0;
+}
+
+.input-group .icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ccc;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px 10px 10px 38px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1rem;
+}
+
+.input-group input::placeholder {
+  color: #ddd;
+}
+
+/* Login button */
+.login-button {
+  width: 100%;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 40px;
+  background-color: white;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-button:hover {
+  background-color: #eee;
+}
+
+/* Options */
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #eee;
+  margin-bottom: 1.2rem;
+}
+
+.register-link {
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  color: #eee;
+}
+
+.register-link a {
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.error {
+  color: #ff7777;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
