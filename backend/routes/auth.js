@@ -18,11 +18,11 @@ router.post('/login', async (req, res) => {
     const result = await pool.request()
       .input('identity', sql.NVarChar, identity.trim())
       .query(`
-        SELECT userID, fullName, roleID, password
-        FROM tblUsers
-        WHERE (LOWER(username) = LOWER(@identity) OR LOWER(email) = LOWER(@identity))
-          AND activate = 1
-      `);
+    SELECT userID, fullName, username, email, phone, address, roleID, password
+    FROM tblUsers
+    WHERE (LOWER(username) = LOWER(@identity) OR LOWER(email) = LOWER(@identity))
+      AND activate = 1
+  `);
 
     if (result.recordset.length === 0) {
       return res.status(401).json({ message: 'Sai thông tin đăng nhập' });
@@ -181,6 +181,62 @@ router.post('/reset-password', async (req, res) => {
   } catch (err) {
     console.error('Lỗi reset mật khẩu:', err);
     res.status(500).json({ message: 'Lỗi server' });
+  }
+});
+
+// Lấy thông tin người dùng chi tiết
+router.get('/users/:userID', async (req, res) => {
+  const { userID } = req.params;
+
+  try {
+    await poolConnect;
+
+    const result = await pool.request()
+      .input('userID', sql.VarChar, userID)
+      .query(`
+        SELECT userID, fullName, username, email, phone, address
+        FROM tblUsers
+        WHERE userID = @userID
+      `);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (err) {
+    console.error('Lỗi lấy thông tin user:', err.originalError?.info || err.message);
+    res.status(500).json({ message: 'Lỗi server' });
+  }
+});
+
+// Cập nhật thông tin người dùng
+router.put('/users/:userID', async (req, res) => {
+  const { userID } = req.params;
+  const { fullName, email, phone, address } = req.body;
+
+  try {
+    await poolConnect;
+
+    await pool.request()
+      .input('userID', sql.VarChar, userID)
+      .input('fullName', sql.NVarChar, fullName || '')
+      .input('email', sql.NVarChar, email || '')
+      .input('phone', sql.VarChar, phone || '')
+      .input('address', sql.NVarChar, address || '')
+      .query(`
+        UPDATE tblUsers
+        SET fullName = @fullName,
+            email = @email,
+            phone = @phone,
+            address = @address
+        WHERE userID = @userID
+      `);
+
+    res.json({ message: 'Cập nhật thành công' });
+  } catch (err) {
+    console.error('Lỗi cập nhật user:', err.originalError?.info || err.message);
+    res.status(500).json({ message: 'Cập nhật thất bại' });
   }
 });
 

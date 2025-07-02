@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaShoppingBag, FaHeart } from 'react-icons/fa';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onAddToCart }) => {
   const discountPercent = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
 
   return (
@@ -30,10 +30,14 @@ const ProductCard = ({ product }) => {
         )}
       </div>
 
-      <button className="w-full py-2 border rounded-full flex items-center justify-center gap-2 text-sm font-medium hover:bg-rose-600 hover:text-white transition mt-auto">
+      <button
+        className="w-full py-2 border rounded-full flex items-center justify-center gap-2 text-sm font-medium hover:bg-rose-600 hover:text-white transition mt-auto"
+        onClick={() => onAddToCart(product)}
+      >
         <FaShoppingBag />
         Add to Cart
       </button>
+
     </div>
   );
 };

@@ -1,3 +1,4 @@
+// ==== [backend/server.js] ====
 const express = require('express');
 const cors = require('cors');
 const { pool, poolConnect } = require('./db');
@@ -5,12 +6,8 @@ require('dotenv').config();
 
 const app = express();
 
-// Bật CORS trước các route
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
-
+// Middleware
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 
 // Routes
@@ -20,10 +17,18 @@ app.use('/api/products', productRoutes);
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
+const categoryRoutes = require('./routes/categories');
+app.use('/api/categories', categoryRoutes);
+
+const rolesRoute = require('./routes/roles');
+app.use('/api/roles', rolesRoute);
+
+const cartRoutes = require('./routes/cart');
+app.use('/api/cart', cartRoutes);
 
 
 
-
+// DB test route
 app.get('/api/test-db', async (req, res) => {
   try {
     await poolConnect;
@@ -35,6 +40,7 @@ app.get('/api/test-db', async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

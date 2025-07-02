@@ -2,27 +2,31 @@ import React, { useState } from 'react';
 import './LoginForm.css';
 import { FaUser, FaLock } from 'react-icons/fa';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm({ onLogin, onRegister, onForgotPassword }) {
-  const [identity, setIdentity] = useState(''); // username or email
+  const [identity, setIdentity] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post('http://localhost:5000/api/auth/login', { identity, password });
 
-      if (rememberMe) {
-        localStorage.setItem('token', res.data.token);
-        localStorage.setItem('user', JSON.stringify(res.data.user));
-      } else {
-        sessionStorage.setItem('token', res.data.token);
-        sessionStorage.setItem('user', JSON.stringify(res.data.user));
-      }
+      // Lưu token và user tạm thời
+      const token = res.data.token;
+      const user = res.data.user;
 
-      onLogin(res.data.user);
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem('token', token);
+      storage.setItem('user', JSON.stringify(user));
+
+      // Gửi cả rememberMe về App
+      onLogin(user, rememberMe);
+      navigate('/');
     } catch (err) {
       setError('Sai tài khoản hoặc mật khẩu');
     }
