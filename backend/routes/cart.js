@@ -8,24 +8,41 @@ router.post('/add', async (req, res) => {
         await poolConnect;
         const { userID, productID, price, quantity } = req.body;
 
-        const result = await pool.request()
+        // Lấy số lượng còn trong kho
+        const stockResult = await pool.request()
+            .input('productID', sql.Int, productID)
+            .query(`SELECT quantity FROM tblProducts WHERE productID = @productID`);
+
+        if (!stockResult.recordset[0]) {
+            return res.status(404).json({ message: 'Không tìm thấy sản phẩm.' });
+        }
+
+        const stock = stockResult.recordset[0].quantity;
+
+        if (quantity > stock) {
+            return res.status(400).json({ message: `Số lượng tồn kho chỉ còn ${stock}` });
+        }
+
+        // Tiếp tục thêm vào giỏ
+        await pool.request()
             .input('userID', sql.VarChar, userID)
             .input('productID', sql.Int, productID)
             .input('price', sql.Decimal(10, 2), price)
             .input('quantity', sql.Int, quantity)
             .query(`
-        IF EXISTS (
-          SELECT 1 FROM tblCart WHERE userID = @userID AND productID = @productID
-        )
-          UPDATE tblCart 
-          SET quantity = quantity + @quantity
-          WHERE userID = @userID AND productID = @productID
-        ELSE
-          INSERT INTO tblCart (userID, productID, price, quantity)
-          VALUES (@userID, @productID, @price, @quantity)
-      `);
+    IF EXISTS (
+      SELECT 1 FROM tblCart WHERE userID = @userID AND productID = @productID
+    )
+      UPDATE tblCart 
+      SET quantity = quantity + @quantity
+      WHERE userID = @userID AND productID = @productID
+    ELSE
+      INSERT INTO tblCart (userID, productID, price, quantity)
+      VALUES (@userID, @productID, @price, @quantity)
+  `);
 
         res.status(200).json({ message: '✔️ Thêm vào giỏ hàng thành công' });
+
     } catch (err) {
         console.error('❌ Lỗi add to cart:', err);
         res.status(500).json({ error: 'Server error' });

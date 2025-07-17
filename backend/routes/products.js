@@ -3,6 +3,7 @@ const router = express.Router();
 const { poolConnect, pool } = require('../db');
 const multer = require('multer');
 const path = require('path');
+const sql = require('mssql');
 
 // Cấu hình lưu ảnh
 const storage = multer.diskStorage({
@@ -88,5 +89,28 @@ router.delete('/:id', async (req, res) => {
     res.status(500).send('Xoá thất bại');
   }
 });
+
+// Sửa đoạn này:
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await poolConnect;
+    const result = await pool
+      .request()
+      .input('id', sql.Int, id)
+      .query('SELECT * FROM tblProducts WHERE productID = @id AND status = 1');
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy sản phẩm.' });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Lỗi server' });
+  }
+});
+
+
 
 module.exports = router;

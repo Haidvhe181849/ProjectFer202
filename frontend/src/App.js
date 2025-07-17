@@ -23,6 +23,8 @@ import RoleManagement from './components/RoleManagement';
 import CartPage from './components/CartPage';
 import UserProfile from './components/Profile/UserProfile';
 import UserProfilePage from './components/Profile/UserProfilePage';
+import ReviewManagement from './components/ReviewManagement';
+import ProductDetail from './components/ProductDetail';
 
 function HomePage({ user, onLogout, cartCount, updateCartCount }) {
   return (
@@ -32,7 +34,6 @@ function HomePage({ user, onLogout, cartCount, updateCartCount }) {
       <BestSellers />
       <ProductList user={user} updateCartCount={updateCartCount} />
       <TrendingNow />
-      <NewCollectionBanner />
       <FeatureIcons />
       <CustomerReviews />
       <ContactSection />
@@ -141,6 +142,10 @@ function App() {
             element={<RoleManagement user={user} onLogout={handleLogout} />}
           />
           <Route
+            path="/review-management"
+            element={<ReviewManagement user={user} onLogout={handleLogout} />}
+          />
+          <Route
             path="/cart"
             element={
               <CartPage
@@ -155,6 +160,17 @@ function App() {
             path="/profile"
             element={
               <UserProfile
+                user={user}
+                onLogout={handleLogout}
+                cartCount={cartCount}
+                updateCartCount={updateCartCount}
+              />
+            }
+          />
+          <Route
+            path="/products/:id"
+            element={
+              <ProductDetail
                 user={user}
                 onLogout={handleLogout}
                 cartCount={cartCount}

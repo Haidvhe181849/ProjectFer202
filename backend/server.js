@@ -26,6 +26,8 @@ app.use('/api/roles', rolesRoute);
 const cartRoutes = require('./routes/cart');
 app.use('/api/cart', cartRoutes);
 
+const reviewRoutes = require('./routes/reviews');
+app.use('/api/reviews', reviewRoutes);
 
 
 // DB test route

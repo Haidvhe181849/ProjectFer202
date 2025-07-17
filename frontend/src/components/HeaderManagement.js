@@ -17,7 +17,8 @@ const HeaderManagement = ({ user, onLogout, cartCount = 0, activePath = '/role-m
     { name: 'Category Management', path: '/category-management' },
     { name: 'Role Management', path: '/role-management' },
     { name: 'Account Management', path: '/account-management' },
-    { name: 'Product Management', path: '/product-management' }
+    { name: 'Product Management', path: '/product-management' },
+    { name: 'Review Management', path: '/review-management' }
   ];
 
   useEffect(() => {
